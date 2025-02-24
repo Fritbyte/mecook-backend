@@ -1,10 +1,10 @@
 package com.mecook.mecookbackend;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mecook.mecookbackend.dto.input.LoginRequest;
-import com.mecook.mecookbackend.dto.input.RegisterRequest;
-import com.mecook.mecookbackend.model.User;
-import com.mecook.mecookbackend.repository.UserRepository;
+import com.mecook.mecookbackend.user.dto.input.LoginRequest;
+import com.mecook.mecookbackend.user.dto.input.RegisterRequest;
+import com.mecook.mecookbackend.user.model.User;
+import com.mecook.mecookbackend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

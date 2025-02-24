@@ -1,11 +1,11 @@
 package com.mecook.mecookbackend;
 
-import com.mecook.mecookbackend.dto.input.LoginRequest;
-import com.mecook.mecookbackend.exception.InvalidCredentialsException;
-import com.mecook.mecookbackend.model.User;
-import com.mecook.mecookbackend.repository.TokenProvider;
-import com.mecook.mecookbackend.repository.UserRepository;
-import com.mecook.mecookbackend.services.UserAuthenticationService;
+import com.mecook.mecookbackend.user.dto.input.LoginRequest;
+import com.mecook.mecookbackend.user.exception.InvalidCredentialsException;
+import com.mecook.mecookbackend.user.model.User;
+import com.mecook.mecookbackend.user.repository.TokenProvider;
+import com.mecook.mecookbackend.user.repository.UserRepository;
+import com.mecook.mecookbackend.user.service.UserAuthenticationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

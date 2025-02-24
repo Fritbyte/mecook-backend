@@ -1,11 +1,11 @@
 package com.mecook.mecookbackend;
 
-import com.mecook.mecookbackend.dto.input.RegisterRequest;
-import com.mecook.mecookbackend.dto.output.RegisterResponse;
-import com.mecook.mecookbackend.exception.PasswordMismatchException;
-import com.mecook.mecookbackend.model.User;
-import com.mecook.mecookbackend.repository.UserRepository;
-import com.mecook.mecookbackend.services.UserRegistrationService;
+import com.mecook.mecookbackend.user.dto.input.RegisterRequest;
+import com.mecook.mecookbackend.user.dto.output.RegisterResponse;
+import com.mecook.mecookbackend.user.exception.PasswordMismatchException;
+import com.mecook.mecookbackend.user.model.User;
+import com.mecook.mecookbackend.user.repository.UserRepository;
+import com.mecook.mecookbackend.user.service.UserRegistrationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
