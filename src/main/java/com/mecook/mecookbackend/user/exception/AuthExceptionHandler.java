@@ -53,6 +53,6 @@ public class AuthExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleNoResourceFoundException(NoResourceFoundException ignoredEx) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ресурс не найден");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The resource was not found");
     }
 }

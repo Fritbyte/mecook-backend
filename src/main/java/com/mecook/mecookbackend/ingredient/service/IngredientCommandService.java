@@ -22,7 +22,7 @@ public class IngredientCommandService {
 
     public IngredientResponse createIngredient(IngredientRequest request) {
         if (ingredientRepository.existsByName(request.name()))
-            throw new IngredientAlreadyExistsException("Ингредиент с названием '" + request.name() + "' уже существует");
+            throw new IngredientAlreadyExistsException("The ingredient with the name '" + request.name () + "'already exists");
 
         Ingredient ingredient = new Ingredient();
         ingredient.setName(request.name());
@@ -33,7 +33,7 @@ public class IngredientCommandService {
 
     public IngredientResponse updateIngredient(Long id, IngredientRequest request) {
         Ingredient ingredient = ingredientRepository.findById(id)
-                .orElseThrow(() -> new IngredientNotFoundException("Ингредиент с id " + id + " не найден"));
+                .orElseThrow(() -> new IngredientNotFoundException("Ingredient with id " + id + " not found"));
 
         ingredient.setName(request.name());
         ingredient.setSearchValue(request.searchValue());
@@ -43,7 +43,7 @@ public class IngredientCommandService {
 
     public void deleteIngredient(Long id) {
         Ingredient ingredient = ingredientRepository.findById(id)
-                .orElseThrow(() -> new IngredientNotFoundException("Ингредиент с id " + id + " не найден"));
+                .orElseThrow(() -> new IngredientNotFoundException("Ingredient with id " + id + " not found"));
 
         ingredientRepository.delete(ingredient);
     }

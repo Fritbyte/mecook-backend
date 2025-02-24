@@ -25,6 +25,6 @@ public class IngredientQueryService {
 
     public Ingredient getIngredientByName(String name) {
         return ingredientRepository.findByName(name)
-                .orElseThrow(() -> new IngredientNotFoundException("Ингредиент с названием '" + name + "' не найден"));
+                .orElseThrow(() -> new IngredientNotFoundException("The ingredient with the name '" + name + "' was not found"));
     }
 }
