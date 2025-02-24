@@ -1,9 +1,10 @@
 package com.mecook.mecookbackend.config;
 
-import com.mecook.mecookbackend.repository.TokenProvider;
+import com.mecook.mecookbackend.user.repository.TokenProvider;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
+
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -15,9 +16,11 @@ public class JwtUtil implements TokenProvider {
     private final RSAPublicKey publicKey;
     private static final long EXPIRATION_TIME = 86400000;
 
-    public RSAPrivateKey getPrivateKey() { return  this.privateKey; }
+    public RSAPrivateKey getPrivateKey() {
+        return this.privateKey;
+    }
 
-    public JwtUtil() throws NoSuchAlgorithmException {
+    public JwtUtil() {
         KeyPair keyPair = Keys.keyPairFor(SignatureAlgorithm.RS256);
         this.privateKey = (RSAPrivateKey) keyPair.getPrivate();
         this.publicKey = (RSAPublicKey) keyPair.getPublic();
