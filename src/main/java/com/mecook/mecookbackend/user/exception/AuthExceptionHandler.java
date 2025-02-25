@@ -1,6 +1,7 @@
 package com.mecook.mecookbackend.user.exception;
 
 import com.mecook.mecookbackend.user.controller.AuthController;
+import com.mecook.mecookbackend.user.controller.UserController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -13,7 +14,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice(basePackageClasses = AuthController.class)
+@ControllerAdvice(basePackageClasses = {AuthController.class, UserController.class})
 public class AuthExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {

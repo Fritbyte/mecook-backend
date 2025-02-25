@@ -1,11 +1,13 @@
 package com.mecook.mecookbackend.dish.exception;
 
+import com.mecook.mecookbackend.dish.controller.DishController;
+import com.mecook.mecookbackend.user.controller.UserController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice
+@ControllerAdvice(basePackageClasses = {DishController.class, UserController.class})
 public class DishExceptionHandler {
     @ExceptionHandler(DishNotFoundException.class)
     public ResponseEntity<String> handleException(DishNotFoundException ex) {
