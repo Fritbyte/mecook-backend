@@ -35,41 +35,36 @@ public class UserService {
     public void updatedPassword(ForgoPasswordRequest request) {
         if (!request.newPassword().equals(request.confirmPassword()))
             throw new PasswordMismatchException("Passwords don't match");
-
-        User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + request.email()));
-
+        User user = userRepository.findByEmail(request.email()).orElseThrow(() -> new UserNotFoundException("User not found with email: " + request.email()));
         user.setPassword(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
     }
 
     public void addFavoriteDish(Long userId, Long dishId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
-        Dish dish = dishRepository.findById(dishId)
-                .orElseThrow(() -> new DishNotFoundException("Dish not found with id: " + dishId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+        Dish dish = dishRepository.findById(dishId).orElseThrow(() -> new DishNotFoundException("Dish not found with id: " + dishId));
         user.getFavoriteDishes().add(dish);
         userRepository.save(user);
     }
 
     public void addFavoriteDishByIdentifier(String identifier, Long dishId) {
-        Optional<User> userOptional;
-        if (identifier.contains("@"))
-            userOptional = userRepository.findByEmail(identifier);
-        else
-            userOptional = userRepository.findByUsername(identifier);
+        Optional<User> userOptional = identifier.contains("@") ? userRepository.findByEmail(identifier) : userRepository.findByUsername(identifier);
         User user = userOptional.orElseThrow(() -> new UserNotFoundException("User not found with id: " + identifier));
-        Dish dish = dishRepository.findById(dishId)
-                .orElseThrow(() -> new DishNotFoundException("Dish not found with id: " + dishId));
+        Dish dish = dishRepository.findById(dishId).orElseThrow(() -> new DishNotFoundException("Dish not found with id: " + dishId));
         user.getFavoriteDishes().add(dish);
         userRepository.save(user);
     }
 
     public List<FavoriteDishResponse> getFavoriteDishes(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
-        return user.getFavoriteDishes().stream()
-                .map(dish -> new FavoriteDishResponse(dish.getId(), dish.getName()))
-                .collect(Collectors.toList());
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+        return user.getFavoriteDishes().stream().map(dish -> new FavoriteDishResponse(dish.getId(), dish.getName())).collect(Collectors.toList());
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
     }
 }
