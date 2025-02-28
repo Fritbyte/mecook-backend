@@ -20,7 +20,7 @@ public class UserRegistrationService {
 
     public RegisterResponse register(RegisterRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
-            throw new PasswordMismatchException("Passwords don't match");
+            throw new PasswordMismatchException("Passwords do not match");
         }
         if (userRepository.existsByUsername(request.username())) {
             throw new IllegalArgumentException("Username already exists");

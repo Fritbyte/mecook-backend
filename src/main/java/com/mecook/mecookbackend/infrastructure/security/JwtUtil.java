@@ -3,6 +3,7 @@ package com.mecook.mecookbackend.infrastructure.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
+
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -14,8 +15,9 @@ public class JwtUtil {
     private final RSAPublicKey publicKey;
     private static final long EXPIRATION_TIME = 86400000;
 
+    private static final KeyPair keyPair = Keys.keyPairFor(SignatureAlgorithm.RS256);
+
     public JwtUtil() {
-        KeyPair keyPair = Keys.keyPairFor(SignatureAlgorithm.RS256);
         this.privateKey = (RSAPrivateKey) keyPair.getPrivate();
         this.publicKey = (RSAPublicKey) keyPair.getPublic();
     }

@@ -29,7 +29,8 @@ public class IngredientCommandService {
     }
 
     public IngredientResponse updateIngredient(Long id, IngredientRequest request) {
-        Ingredient ingredient = ingredientRepository.findById(id).orElseThrow(() -> new RuntimeException("Ingredient not found"));
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ingredient not found with id " + id));
         ingredient.setName(request.name());
         ingredient.setSearchValue(request.searchValue());
         Ingredient updated = ingredientRepository.save(ingredient);
@@ -37,7 +38,8 @@ public class IngredientCommandService {
     }
 
     public void deleteIngredient(Long id) {
-        Ingredient ingredient = ingredientRepository.findById(id).orElseThrow(() -> new RuntimeException("Ingredient not found"));
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ingredient not found with id " + id));
         ingredientRepository.delete(ingredient);
     }
 }

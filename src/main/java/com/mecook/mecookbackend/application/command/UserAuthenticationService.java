@@ -33,7 +33,9 @@ public class UserAuthenticationService {
 
     private User findUser(String identifier) {
         return identifier.contains("@")
-                ? userRepository.findByEmail(identifier).orElseThrow(() -> new UserNotFoundException("User not found"))
-                : userRepository.findByUsername(identifier).orElseThrow(() -> new UserNotFoundException("User not found"));
+                ? userRepository.findByEmail(identifier)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + identifier))
+                : userRepository.findByUsername(identifier)
+                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + identifier));
     }
 }

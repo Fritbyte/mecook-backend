@@ -10,20 +10,26 @@ public class Dish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, length = 100)
     private String name;
+
     @Column(nullable = false, length = 200)
     private String description;
-    @ElementCollection
-    private List<String> ingredients;
+
+    @ManyToMany
+    @JoinTable(
+            name = "dish_ingredients",
+            joinColumns = @JoinColumn(name = "dish_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
+    private List<Ingredient> ingredients;
 
     public Dish() {
     }
 
-    public Dish(String name, String description, List<String> ingredients) {
+    public Dish(String name, String description) {
         this.name = name;
         this.description = description;
-        this.ingredients = ingredients;
     }
 
     public Long getId() {
@@ -50,11 +56,11 @@ public class Dish {
         this.description = description;
     }
 
-    public List<String> getIngredients() {
+    public List<Ingredient> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<String> ingredients) {
+    public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
 }

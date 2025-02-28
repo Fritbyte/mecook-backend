@@ -5,6 +5,7 @@ import com.mecook.mecookbackend.domain.model.Ingredient;
 import com.mecook.mecookbackend.domain.repository.IngredientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -17,15 +18,14 @@ public class IngredientQueryService {
     }
 
     public List<IngredientResponse> getAllIngredients() {
-        List<Ingredient> ingredients = ingredientRepository.findAll();
-        return ingredients.stream()
-                .map(i -> new IngredientResponse(i.getId(), i.getName(), i.getSearchValue()))
+        return ingredientRepository.findAll().stream()
+                .map(ingredient -> new IngredientResponse(ingredient.getId(), ingredient.getName(), ingredient.getSearchValue()))
                 .toList();
     }
 
     public IngredientResponse getIngredientByName(String name) {
         Ingredient ingredient = ingredientRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Ingredient not found"));
+                .orElseThrow(() -> new RuntimeException("Ingredient not found with name: " + name));
         return new IngredientResponse(ingredient.getId(), ingredient.getName(), ingredient.getSearchValue());
     }
 }
