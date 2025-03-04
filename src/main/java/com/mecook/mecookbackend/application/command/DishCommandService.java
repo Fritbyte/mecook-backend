@@ -9,10 +9,12 @@ import com.mecook.mecookbackend.domain.model.Dish;
 import com.mecook.mecookbackend.domain.model.Ingredient;
 import com.mecook.mecookbackend.domain.repository.DishRepository;
 import com.mecook.mecookbackend.domain.repository.IngredientRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +28,8 @@ public class DishCommandService {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public DishResponse createDish(DishRequest request) {
+    @Async
+    public CompletableFuture<DishResponse> createDish(DishRequest request) {
         if (dishRepository.existsByName(request.name())) {
             throw new DishAlreadyExistsException("Dish already exists");
         }
@@ -36,10 +39,11 @@ public class DishCommandService {
         dish.setIngredients(ingredients);
         Dish saved = dishRepository.save(dish);
 
-        return mapToResponse(saved);
+        return CompletableFuture.completedFuture(mapToResponse(saved));
     }
 
-    public DishResponse updateDish(Long id, DishRequest request) {
+    @Async
+    public CompletableFuture<DishResponse> updateDish(Long id, DishRequest request) {
         Dish dish = dishRepository.findById(id)
                 .orElseThrow(() -> new DishNotFoundException("Dish not found with id " + id));
 
@@ -50,13 +54,15 @@ public class DishCommandService {
         dish.setIngredients(ingredients);
         Dish updated = dishRepository.save(dish);
 
-        return mapToResponse(updated);
+        return CompletableFuture.completedFuture(mapToResponse(updated));
     }
 
-    public void deleteDish(Long id) {
+    @Async
+    public CompletableFuture<Void> deleteDish(Long id) {
         Dish dish = dishRepository.findById(id)
                 .orElseThrow(() -> new DishNotFoundException("Dish not found with id " + id));
         dishRepository.delete(dish);
+        return CompletableFuture.completedFuture(null);
     }
 
     private List<Ingredient> fetchIngredients(DishRequest request) {

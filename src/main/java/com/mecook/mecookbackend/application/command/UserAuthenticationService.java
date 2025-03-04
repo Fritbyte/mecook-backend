@@ -7,8 +7,11 @@ import com.mecook.mecookbackend.domain.repository.UserRepository;
 import com.mecook.mecookbackend.infrastructure.security.JwtUtil;
 import com.mecook.mecookbackend.domain.exception.InvalidCredentialsException;
 import com.mecook.mecookbackend.domain.exception.UserNotFoundException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class UserAuthenticationService {
@@ -22,13 +25,14 @@ public class UserAuthenticationService {
         this.jwtUtil = jwtUtil;
     }
 
-    public LoginResponse authenticate(LoginRequest request) {
+    @Async
+    public CompletableFuture<LoginResponse> authenticate(LoginRequest request) {
         User user = findUser(request.identifier());
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new InvalidCredentialsException("Invalid credentials");
         }
         String token = jwtUtil.generateToken(user.getUsername());
-        return new LoginResponse(token);
+        return CompletableFuture.completedFuture(new LoginResponse(token));
     }
 
     private User findUser(String identifier) {

@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.CompletableFuture;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -22,14 +24,14 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(@RequestBody @Valid RegisterRequest request) {
-        RegisterResponse response = registrationService.register(request);
-        return ResponseEntity.ok(response);
+    public CompletableFuture<ResponseEntity<RegisterResponse>> register(@RequestBody @Valid RegisterRequest request) {
+        return registrationService.register(request)
+                .thenApply(ResponseEntity::ok);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
-        LoginResponse response = authenticationService.authenticate(request);
-        return ResponseEntity.ok(response);
+    public CompletableFuture<ResponseEntity<LoginResponse>> login(@RequestBody @Valid LoginRequest request) {
+        return authenticationService.authenticate(request)
+                .thenApply(ResponseEntity::ok);
     }
 }

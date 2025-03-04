@@ -13,8 +13,10 @@ import com.mecook.mecookbackend.domain.exception.UserNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.scheduling.annotation.Async;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Transactional
@@ -29,7 +31,8 @@ public class UserCommandService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void updatePassword(ForgotPasswordRequest request) {
+    @Async
+    public CompletableFuture<Void> updatePassword(ForgotPasswordRequest request) {
         if (!Objects.equals(request.newPassword(), request.confirmPassword())) {
             throw new PasswordMismatchException("Passwords do not match");
         }
@@ -37,9 +40,11 @@ public class UserCommandService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + request.email()));
         user.setPassword(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
+        return CompletableFuture.completedFuture(null);
     }
 
-    public void addFavoriteDishByIdentifier(String identifier, AddFavoriteDishRequest request) {
+    @Async
+    public CompletableFuture<Void> addFavoriteDishByIdentifier(String identifier, AddFavoriteDishRequest request) {
         User user = identifier.contains("@")
                 ? userRepository.findByEmail(identifier)
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + identifier))
@@ -49,9 +54,11 @@ public class UserCommandService {
                 .orElseThrow(() -> new RuntimeException("Dish not found with id: " + request.dishId()));
         user.getFavoriteDishes().add(dish);
         userRepository.save(user);
+        return CompletableFuture.completedFuture(null);
     }
 
-    public void removeFavoriteDishByIndentifier(String identifier, RemoveFavoriteDishRequest request) {
+    @Async
+    public CompletableFuture<Void> removeFavoriteDishByIndentifier(String identifier, RemoveFavoriteDishRequest request) {
         User user = identifier.contains("@")
                 ? userRepository.findByEmail(identifier)
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + identifier))
@@ -65,5 +72,6 @@ public class UserCommandService {
             throw new DishNotFoundException("Dish is not in the user's favorites");
         }
         userRepository.save(user);
+        return CompletableFuture.completedFuture(null);
     }
 }

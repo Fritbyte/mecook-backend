@@ -7,7 +7,9 @@ import com.mecook.mecookbackend.application.query.DishQueryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/dishes")
@@ -21,28 +23,32 @@ public class DishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DishResponse>> getAllDishes() {
-        return ResponseEntity.ok(dishQueryService.getAllDishes());
+    public CompletableFuture<ResponseEntity<List<DishResponse>>> getAllDishes() {
+        return dishQueryService.getAllDishes()
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DishResponse> getDishById(@PathVariable Long id) {
-        return ResponseEntity.ok(dishQueryService.getDishById(id));
+    public CompletableFuture<ResponseEntity<DishResponse>> getDishById(@PathVariable Long id) {
+        return dishQueryService.getDishById(id)
+                .thenApply(ResponseEntity::ok);
     }
 
     @PostMapping
-    public ResponseEntity<DishResponse> createDish(@RequestBody @Valid DishRequest request) {
-        return ResponseEntity.ok(dishCommandService.createDish(request));
+    public CompletableFuture<ResponseEntity<DishResponse>> createDish(@RequestBody @Valid DishRequest request) {
+        return dishCommandService.createDish(request)
+                .thenApply(ResponseEntity::ok);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DishResponse> updateDish(@PathVariable Long id, @RequestBody @Valid DishRequest request) {
-        return ResponseEntity.ok(dishCommandService.updateDish(id, request));
+    public CompletableFuture<ResponseEntity<DishResponse>> updateDish(@PathVariable Long id, @RequestBody @Valid DishRequest request) {
+        return dishCommandService.updateDish(id, request)
+                .thenApply(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDish(@PathVariable Long id) {
-        dishCommandService.deleteDish(id);
-        return ResponseEntity.noContent().build();
+    public CompletableFuture<ResponseEntity<Void>> deleteDish(@PathVariable Long id) {
+        return dishCommandService.deleteDish(id)
+                .thenApply(aVoid -> ResponseEntity.noContent().build());
     }
 }

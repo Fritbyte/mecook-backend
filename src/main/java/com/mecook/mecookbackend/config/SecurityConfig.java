@@ -1,5 +1,6 @@
-package com.mecook.mecookbackend.infrastructure.security;
+package com.mecook.mecookbackend.config;
 
+import com.mecook.mecookbackend.infrastructure.security.SecretKeyAuthFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

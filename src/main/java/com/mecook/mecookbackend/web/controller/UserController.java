@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/users")
@@ -28,46 +29,50 @@ public class UserController {
     }
 
     @PutMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestHeader("Authorization") String authHeader,
-                                                 @RequestBody @Valid ForgotPasswordRequest request) {
+    public CompletableFuture<ResponseEntity<String>> forgotPassword(@RequestHeader("Authorization") String authHeader,
+                                                                    @RequestBody @Valid ForgotPasswordRequest request) {
         String token = extractToken(authHeader);
         String tokenUsername = jwtUtil.extractUsername(token);
-        var user = userQueryService.getUserByEmail(request.email());
-        if (!user.getUsername().equals(tokenUsername)) {
-            throw new UnauthorizedActionException("You are not authorized to perform this request");
-        }
-        userCommandService.updatePassword(request);
-        return ResponseEntity.ok("Password updated successfully");
+        return userQueryService.getUserByEmail(request.email())
+                .thenCompose(user -> {
+                    if (!user.getUsername().equals(tokenUsername)) {
+                        throw new UnauthorizedActionException("You are not authorized to perform this request");
+                    }
+                    return userCommandService.updatePassword(request)
+                            .thenApply(aVoid -> ResponseEntity.ok("Password updated successfully"));
+                });
     }
 
     @PostMapping("/favorites")
-    public ResponseEntity<String> addFavoriteDish(@RequestHeader("Authorization") String authHeader,
-                                                  @RequestBody @Valid AddFavoriteDishRequest request) {
+    public CompletableFuture<ResponseEntity<String>> addFavoriteDish(@RequestHeader("Authorization") String authHeader,
+                                                                     @RequestBody @Valid AddFavoriteDishRequest request) {
         String token = extractToken(authHeader);
         String username = jwtUtil.extractUsername(token);
-        userCommandService.addFavoriteDishByIdentifier(username, request);
-        return ResponseEntity.ok("Dish added to favorites successfully");
+        return userCommandService.addFavoriteDishByIdentifier(username, request)
+                .thenApply(aVoid -> ResponseEntity.ok("Dish added to favorites successfully"));
     }
 
     @DeleteMapping("/favorites/{dishId}")
-    public ResponseEntity<String> removeFavoriteDish(@RequestHeader("Authorization") String authHeader,
-                                                     @PathVariable Long dishId) {
+    public CompletableFuture<ResponseEntity<String>> removeFavoriteDish(@RequestHeader("Authorization") String authHeader,
+                                                                        @PathVariable Long dishId) {
         String token = extractToken(authHeader);
         String username = jwtUtil.extractUsername(token);
-        userCommandService.removeFavoriteDishByIndentifier(username, new RemoveFavoriteDishRequest(dishId));
-        return ResponseEntity.ok("Dish removed from favorites successfully");
+        return userCommandService.removeFavoriteDishByIndentifier(username, new RemoveFavoriteDishRequest(dishId))
+                .thenApply(aVoid -> ResponseEntity.ok("Dish removed from favorites successfully"));
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<DishResponse>> getFavoriteDishes(@RequestHeader("Authorization") String authHeader) {
+    public CompletableFuture<ResponseEntity<List<DishResponse>>> getFavoriteDishes(@RequestHeader("Authorization") String authHeader) {
         String token = extractToken(authHeader);
         String tokenUsername = jwtUtil.extractUsername(token);
-        var user = userQueryService.getUserByUsername(tokenUsername);
-        if (!user.getUsername().equals(tokenUsername)) {
-            throw new UnauthorizedActionException("You are not authorized to view these favorite dishes");
-        }
-        List<DishResponse> favorites = userQueryService.getFavoriteDishes(user.getId());
-        return ResponseEntity.ok(favorites);
+        return userQueryService.getUserByUsername(tokenUsername)
+                .thenCompose(user -> {
+                    if (!user.getUsername().equals(tokenUsername)) {
+                        throw new UnauthorizedActionException("You are not authorized to view these favorite dishes");
+                    }
+                    return userQueryService.getFavoriteDishes(user.getId())
+                            .thenApply(ResponseEntity::ok);
+                });
     }
 
     private String extractToken(String authHeader) {

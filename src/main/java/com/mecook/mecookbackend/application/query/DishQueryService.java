@@ -5,10 +5,12 @@ import com.mecook.mecookbackend.domain.model.Dish;
 import com.mecook.mecookbackend.domain.model.Ingredient;
 import com.mecook.mecookbackend.domain.repository.DishRepository;
 import com.mecook.mecookbackend.domain.exception.DishNotFoundException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,16 +22,19 @@ public class DishQueryService {
         this.dishRepository = dishRepository;
     }
 
-    public List<DishResponse> getAllDishes() {
-        return dishRepository.findAll().stream()
+    @Async
+    public CompletableFuture<List<DishResponse>> getAllDishes() {
+        List<DishResponse> responses = dishRepository.findAll().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+        return CompletableFuture.completedFuture(responses);
     }
 
-    public DishResponse getDishById(Long id) {
+    @Async
+    public CompletableFuture<DishResponse> getDishById(Long id) {
         Dish dish = dishRepository.findById(id)
                 .orElseThrow(() -> new DishNotFoundException("Dish not found with id " + id));
-        return mapToResponse(dish);
+        return CompletableFuture.completedFuture(mapToResponse(dish));
     }
 
     private DishResponse mapToResponse(Dish dish) {
