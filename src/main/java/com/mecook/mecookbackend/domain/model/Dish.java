@@ -1,7 +1,6 @@
 package com.mecook.mecookbackend.domain.model;
 
 import jakarta.persistence.*;
-
 import java.util.List;
 
 @Entity
@@ -24,20 +23,21 @@ public class Dish {
             inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
     private List<Ingredient> ingredients;
 
+    @ManyToOne
+    @JoinColumn(name = "country_id", nullable = false)
+    private Country country;
+
     public Dish() {
     }
 
-    public Dish(String name, String description) {
+    public Dish(String name, String description, Country country) {
         this.name = name;
         this.description = description;
+        this.country = country;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -62,5 +62,13 @@ public class Dish {
 
     public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
     }
 }

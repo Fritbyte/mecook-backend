@@ -34,6 +34,25 @@ public class DishController {
                 .thenApply(ResponseEntity::ok);
     }
 
+    @GetMapping("/search")
+    public CompletableFuture<ResponseEntity<List<DishResponse>>> searchDishes(
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) List<String> ingredients) {
+        if (country != null && ingredients != null && !ingredients.isEmpty()) {
+            return dishQueryService.searchDishesByCountryAndIngredients(country, ingredients)
+                    .thenApply(ResponseEntity::ok);
+        } else if (country != null) {
+            return dishQueryService.searchDishesByCountry(country)
+                    .thenApply(ResponseEntity::ok);
+        } else if (ingredients != null && !ingredients.isEmpty()) {
+            return dishQueryService.searchDishesByIngredients(ingredients)
+                    .thenApply(ResponseEntity::ok);
+        } else {
+            return dishQueryService.getAllDishes()
+                    .thenApply(ResponseEntity::ok);
+        }
+    }
+
     @PostMapping
     public CompletableFuture<ResponseEntity<DishResponse>> createDish(@RequestBody @Valid DishRequest request) {
         return dishCommandService.createDish(request)
