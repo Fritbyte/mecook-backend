@@ -6,6 +6,7 @@ public record DishResponse(
         Long id,
         String name,
         String description,
+        String country,
         List<String> ingredients
 ) {
 }
