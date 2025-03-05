@@ -5,7 +5,10 @@ import com.mecook.mecookbackend.domain.model.Ingredient;
 import com.mecook.mecookbackend.domain.repository.IngredientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.scheduling.annotation.Async;
+
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Transactional(readOnly = true)
@@ -16,16 +19,23 @@ public class IngredientQueryService {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public List<IngredientResponse> getAllIngredients() {
-        List<Ingredient> ingredients = ingredientRepository.findAll();
-        return ingredients.stream()
-                .map(i -> new IngredientResponse(i.getId(), i.getName(), i.getSearchValue()))
+    @Async
+    public CompletableFuture<List<IngredientResponse>> getAllIngredients() {
+        List<IngredientResponse> responses = ingredientRepository.findAll().stream()
+                .map(ingredient -> new IngredientResponse(
+                        ingredient.getId(),
+                        ingredient.getName(),
+                        ingredient.getSearchValue()))
                 .toList();
+        return CompletableFuture.completedFuture(responses);
     }
 
-    public IngredientResponse getIngredientByName(String name) {
+    @Async
+    public CompletableFuture<IngredientResponse> getIngredientByName(String name) {
         Ingredient ingredient = ingredientRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Ingredient not found"));
-        return new IngredientResponse(ingredient.getId(), ingredient.getName(), ingredient.getSearchValue());
+                .orElseThrow(() -> new RuntimeException("Ingredient not found with name: " + name));
+        return CompletableFuture.completedFuture(
+                new IngredientResponse(ingredient.getId(), ingredient.getName(), ingredient.getSearchValue())
+        );
     }
 }

@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface DishRepository {
     Optional<Dish> findById(Long id);
     Dish save(Dish dish);
+    Optional<Dish> findByName(String name);
     List<Dish> findAll();
     boolean existsByName(String name);
     void delete(Dish dish);

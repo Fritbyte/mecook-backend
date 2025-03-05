@@ -7,6 +7,9 @@ import com.mecook.mecookbackend.domain.model.Ingredient;
 import com.mecook.mecookbackend.domain.repository.IngredientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.scheduling.annotation.Async;
+
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Transactional
@@ -17,7 +20,8 @@ public class IngredientCommandService {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public IngredientResponse createIngredient(IngredientRequest request) {
+    @Async
+    public CompletableFuture<IngredientResponse> createIngredient(IngredientRequest request) {
         if (ingredientRepository.existsByName(request.name())) {
             throw new IngredientAlreadyExistsException("Ingredient already exists");
         }
@@ -25,19 +29,28 @@ public class IngredientCommandService {
         ingredient.setName(request.name());
         ingredient.setSearchValue(request.searchValue());
         Ingredient saved = ingredientRepository.save(ingredient);
-        return new IngredientResponse(saved.getId(), saved.getName(), saved.getSearchValue());
+        return CompletableFuture.completedFuture(
+                new IngredientResponse(saved.getId(), saved.getName(), saved.getSearchValue())
+        );
     }
 
-    public IngredientResponse updateIngredient(Long id, IngredientRequest request) {
-        Ingredient ingredient = ingredientRepository.findById(id).orElseThrow(() -> new RuntimeException("Ingredient not found"));
+    @Async
+    public CompletableFuture<IngredientResponse> updateIngredient(Long id, IngredientRequest request) {
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ingredient not found with id " + id));
         ingredient.setName(request.name());
         ingredient.setSearchValue(request.searchValue());
         Ingredient updated = ingredientRepository.save(ingredient);
-        return new IngredientResponse(updated.getId(), updated.getName(), updated.getSearchValue());
+        return CompletableFuture.completedFuture(
+                new IngredientResponse(updated.getId(), updated.getName(), updated.getSearchValue())
+        );
     }
 
-    public void deleteIngredient(Long id) {
-        Ingredient ingredient = ingredientRepository.findById(id).orElseThrow(() -> new RuntimeException("Ingredient not found"));
+    @Async
+    public CompletableFuture<Void> deleteIngredient(Long id) {
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ingredient not found with id " + id));
         ingredientRepository.delete(ingredient);
+        return CompletableFuture.completedFuture(null);
     }
 }

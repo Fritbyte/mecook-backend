@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/ingredients")
@@ -22,28 +24,32 @@ public class IngredientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<IngredientResponse>> getAllIngredients() {
-        return ResponseEntity.ok(ingredientQueryService.getAllIngredients());
+    public CompletableFuture<ResponseEntity<List<IngredientResponse>>> getAllIngredients() {
+        return ingredientQueryService.getAllIngredients()
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<IngredientResponse> getIngredientByName(@RequestParam("name") String name) {
-        return ResponseEntity.ok(ingredientQueryService.getIngredientByName(name));
+    public CompletableFuture<ResponseEntity<IngredientResponse>> getIngredientByName(@RequestParam("name") String name) {
+        return ingredientQueryService.getIngredientByName(name)
+                .thenApply(ResponseEntity::ok);
     }
 
     @PostMapping
-    public ResponseEntity<IngredientResponse> createIngredient(@RequestBody @Valid IngredientRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ingredientCommandService.createIngredient(request));
+    public CompletableFuture<ResponseEntity<IngredientResponse>> createIngredient(@RequestBody @Valid IngredientRequest request) {
+        return ingredientCommandService.createIngredient(request)
+                .thenApply(response -> ResponseEntity.status(HttpStatus.CREATED).body(response));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<IngredientResponse> updateIngredient(@PathVariable Long id, @RequestBody @Valid IngredientRequest request) {
-        return ResponseEntity.ok(ingredientCommandService.updateIngredient(id, request));
+    public CompletableFuture<ResponseEntity<IngredientResponse>> updateIngredient(@PathVariable Long id, @RequestBody @Valid IngredientRequest request) {
+        return ingredientCommandService.updateIngredient(id, request)
+                .thenApply(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteIngredient(@PathVariable Long id) {
-        ingredientCommandService.deleteIngredient(id);
-        return ResponseEntity.noContent().build();
+    public CompletableFuture<ResponseEntity<Void>> deleteIngredient(@PathVariable Long id) {
+        return ingredientCommandService.deleteIngredient(id)
+                .thenApply(aVoid -> ResponseEntity.noContent().build());
     }
 }

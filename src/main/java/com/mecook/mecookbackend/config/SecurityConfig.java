@@ -1,5 +1,6 @@
-package com.mecook.mecookbackend.infrastructure.security;
+package com.mecook.mecookbackend.config;
 
+import com.mecook.mecookbackend.infrastructure.security.SecretKeyAuthFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,9 +27,8 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/users/**", "/api/ingredients/search").authenticated()
-                        .anyRequest().authenticated()
-                )
+                        .requestMatchers(HttpMethod.GET, "/api/users/**", "/api/ingredients/search").permitAll()
+                        .anyRequest().permitAll())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
         http.addFilterBefore(secretKeyAuthFilter(), UsernamePasswordAuthenticationFilter.class);
