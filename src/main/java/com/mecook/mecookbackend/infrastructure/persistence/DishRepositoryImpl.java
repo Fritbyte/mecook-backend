@@ -27,6 +27,11 @@ public class DishRepositoryImpl implements DishRepository {
     }
 
     @Override
+    public Optional<Dish> findByName(String name) {
+        return dishJpaRepository.findByName(name);
+    }
+
+    @Override
     public List<Dish> findAll() {
         return dishJpaRepository.findAll();
     }
