@@ -1,0 +1,58 @@
+# Maven
+target/
+!target/*.jar
+*.class
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+dependency-reduced-pom.xml
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+.factorypath
+
+# Logs
+*.log
+logs/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentation
+README.md
+LICENSE
+HELP.md
+docs/
+
+# Test files
+src/test/
+**/test/
+**/tests/
+**/testdata/
+
+# Development configs
+**/application-dev.properties
+**/application-test.properties
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~
