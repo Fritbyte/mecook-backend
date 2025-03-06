@@ -11,8 +11,12 @@ public class DishContentBlock {
     @ManyToOne
     private Dish dish;
 
+    @Column(name = "type")
     private String type;
+
+    @Column(name = "block_value", length = 255)
     private String value;
+
     private int orderIndex;
 
     public DishContentBlock() {

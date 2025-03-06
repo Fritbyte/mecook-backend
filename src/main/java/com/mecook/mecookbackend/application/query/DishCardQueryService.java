@@ -48,7 +48,7 @@ public class DishCardQueryService {
         }
         return blocks.stream()
                 .sorted(Comparator.comparingInt(DishContentBlock::getOrderIndex))
-                .map(b -> new DishCardBlockResponse(b.getType(), b.getValue(), b.getOrderIndex()))
+                .map(b -> new DishCardBlockResponse(b.getType(), b.getValue(), "", b.getOrderIndex()))
                 .collect(Collectors.toList());
     }
 }

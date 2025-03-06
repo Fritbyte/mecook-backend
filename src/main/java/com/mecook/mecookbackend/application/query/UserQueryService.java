@@ -44,6 +44,7 @@ public class UserQueryService {
                         dish.getId(),
                         dish.getName(),
                         dish.getDescription(),
+                        dish.getCountry().getName(),
                         dish.getIngredients().stream()
                                 .map(Ingredient::getName)
                                 .collect(Collectors.toList())

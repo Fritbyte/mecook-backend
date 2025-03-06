@@ -75,7 +75,7 @@ public class DishCardCommandService {
                 .toList();
         List<DishCardBlockResponse> responses = saved.stream()
                 .sorted(Comparator.comparingInt(DishContentBlock::getOrderIndex))
-                .map(b -> new DishCardBlockResponse(b.getType(), b.getValue(), b.getOrderIndex()))
+                .map(b -> new DishCardBlockResponse(b.getType(), b.getValue(), "", b.getOrderIndex()))
                 .collect(Collectors.toList());
         return CompletableFuture.completedFuture(responses);
     }
