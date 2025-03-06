@@ -44,6 +44,6 @@ public class CountryQueryService {
     }
 
     private CountryResponse mapToResponse(Country country) {
-        return new CountryResponse(country.getId(), country.getName());
+        return new CountryResponse(country.getId(), country.getName(), country.getImageUrl());
     }
 }

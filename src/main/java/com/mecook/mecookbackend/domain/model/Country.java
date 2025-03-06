@@ -11,12 +11,20 @@ public class Country {
 
     @Column(nullable = false, unique = true, length = 50)
     private String name;
+    
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
 
     public Country() {
     }
 
     public Country(String name) {
         this.name = name;
+    }
+    
+    public Country(String name, String imageUrl) {
+        this.name = name;
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -33,5 +41,13 @@ public class Country {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

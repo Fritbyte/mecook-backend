@@ -26,7 +26,7 @@ public class CountryCommandService {
         if (countryRepository.existsByName(request.name())) {
             throw new CountryAlreadyExistsException("Country already exists with name: " + request.name());
         }
-        Country country = new Country(request.name());
+        Country country = new Country(request.name(), request.imageUrl());
         Country saved = countryRepository.save(country);
         return CompletableFuture.completedFuture(mapToResponse(saved));
     }
@@ -36,6 +36,7 @@ public class CountryCommandService {
         Country country = countryRepository.findById(id)
                 .orElseThrow(() -> new CountryNotFoundException("Country not found with id " + id));
         country.setName(request.name());
+        country.setImageUrl(request.imageUrl());
         Country updated = countryRepository.save(country);
         return CompletableFuture.completedFuture(mapToResponse(updated));
     }
@@ -49,6 +50,6 @@ public class CountryCommandService {
     }
 
     private CountryResponse mapToResponse(Country country) {
-        return new CountryResponse(country.getId(), country.getName());
+        return new CountryResponse(country.getId(), country.getName(), country.getImageUrl());
     }
 }
