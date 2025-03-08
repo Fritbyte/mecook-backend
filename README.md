@@ -142,53 +142,73 @@ http://localhost:8080/api/ping
 ### Слои приложения:
 
 - **Controller Layer**: REST контроллеры, которые принимают HTTP-запросы и возвращают ответы.
-- **Service Layer**: Бизнес-логика приложения.
+- **Service Layer**: Бизнес-логика приложения, разделенная на команды (commands) и запросы (queries).
 - **Repository Layer**: Доступ к данным через Spring Data JPA.
 - **Model Layer**: Сущности базы данных и объекты передачи данных (DTO).
 - **Security Layer**: Аутентификация и авторизация.
 
-### Структура пакетов:
+### Структура проекта:
 
 ```
 mecook-backend/
 ├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/
-│   │   │       └── mecook/
-│   │   │           └── mecookbackend/
-│   │   │               ├── application/
-│   │   │               │   ├── config/
-│   │   │               │   ├── controller/
-│   │   │               │   ├── dto/
-│   │   │               │   │   ├── input/
-│   │   │               │   │   └── output/
-│   │   │               │   └── service/
-│   │   │               ├── domain/
-│   │   │               │   ├── exception/
-│   │   │               │   ├── model/
-│   │   │               │   └── repository/
-│   │   │               ├── infrastructure/
-│   │   │               │   ├── security/
-│   │   │               │   └── persistence/
-│   │   │               │       └── jpa/
-│   │   │               └── MecookBackendApplication.java
-│   │   └── resources/
-│   │       ├── db/
-│   │       │   └── migration/
-│   │       ├── application.properties
-│   │       ├── application-dev.properties
-│   │       └── application-prod.properties
-│   └── test/
-│       └── java/
-│           └── com/
-│               └── mecook/
-│                   └── mecookbackend/
-│                       ├── controller/
-│                       ├── service/
-│                       └── repository/
-└── pom.xml
+│   └── main/
+│       ├── java/
+│       │   └── com/
+│       │       └── mecook/
+│       │           └── mecookbackend/
+│       │               ├── MeCookApplication.java
+│       │               ├── application/
+│       │               │   ├── command/
+│       │               │   ├── dto/
+│       │               │   │   ├── input/
+│       │               │   │   └── output/
+│       │               │   └── query/
+│       │               ├── config/
+│       │               ├── domain/
+│       │               │   ├── exception/
+│       │               │   ├── model/
+│       │               │   └── repository/ 
+│       │               ├── infrastructure/
+│       │               │   ├── persistence/
+│       │               │   │   └── jpa/
+│       │               │   └── security/
+│       │               └── web/
+│       │                   ├── controller/
+│       │                   ├── dto/    
+│       │                   └── exception/ 
+│       └── resources/
+│           ├── META-INF/
+│           ├── application.properties
+│           ├── application-dev.properties
+│           ├── application-prod.properties
+│           └── application-test.properties  
 ```
+
+### Структура пакетов приложения:
+
+#### Пакет application/command
+Содержит сервисы, реализующие модификацию данных:
+- `CountryCommandService.java` - управление странами
+- `DishCommandService.java` - управление блюдами
+- `UserAuthenticationService.java` - аутентификация пользователей
+- `UserRegistrationService.java` - регистрация новых пользователей
+
+#### Пакет domain/model
+Основные сущности приложения:
+- `Country.java` - информация о странах
+- `Dish.java` - информация о блюдах
+- `DishContentBlock.java` - блоки контента для описания блюд
+- `Ingredient.java` - ингредиенты для блюд
+- `User.java` - пользовательские данные
+
+#### Пакет web/controller
+REST API контроллеры:
+- `AuthController.java` - авторизация пользователей
+- `CountryController.java` - операции со странами
+- `DishController.java` - операции с блюдами
+- `IngredientController.java` - операции с ингредиентами
+- `UserController.java` - операции с пользователями
 
 ## API документация
 
